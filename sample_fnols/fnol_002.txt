@@ -1,0 +1,44 @@
+FIRST NOTICE OF LOSS - FNOL DOCUMENT
+=====================================
+
+POLICY INFORMATION
+------------------
+Policy Number     : POL-2023-08812
+Policyholder Name : David Okonkwo
+Policy Effective  : 15-Jun-2023
+Policy Expiry     : 14-Jun-2024
+
+INCIDENT INFORMATION
+---------------------
+Date of Incident  : 02-Apr-2024
+Time of Incident  : 06:15 PM
+Location          : Elm Street & 5th Ave, Brooklyn, NY
+Description       : Insured was crossing intersection on a green pedestrian
+                    signal when an oncoming vehicle ran the red light and struck
+                    him. Claimant was taken to Kings County Hospital with
+                    reported injuries including fractured left arm and bruised
+                    ribs. Vehicle damage also reported to claimant's rental car.
+
+INVOLVED PARTIES
+----------------
+Claimant          : David Okonkwo
+Third Party       : Unknown Driver (Hit and Run)
+Contact Details   : david.okonkwo@gmail.com | +1-718-555-0088
+
+ASSET DETAILS
+-------------
+Asset Type        : Motor Vehicle (Rental) + Personal Injury
+Asset ID / Plate  : NY-RNT-4421
+Make & Model      : Toyota Camry 2023 (Rental)
+Estimated Damage  : $32,000 (vehicle + medical)
+
+CLAIM DETAILS
+-------------
+Claim Type        : Injury
+Attachments       : MedicalReport_KingsCounty.pdf, PoliceReport_Brooklyn_02Apr.pdf, HospitalBill_001.pdf
+Initial Estimate  : $32,000
+
+=====================================
+Submitted by: David Okonkwo
+Submission Date : 03-Apr-2024
+=====================================

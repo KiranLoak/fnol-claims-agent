@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ClaimSight — FNOL Processing</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #080a0f;
+      --bg2:        #0e1118;
+      --bg3:        #151820;
+      --border:     #1f2330;
+      --border2:    #2a2f40;
+      --amber:      #f0a500;
+      --amber-dim:  #a87200;
+      --amber-glow: rgba(240,165,0,0.12);
+      --text:       #dde3f0;
+      --text-dim:   #7a8299;
+      --text-faint: #3a3f52;
+      --green:      #22c55e;
+      --red:        #ef4444;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── grid noise texture overlay ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        repeating-linear-gradient(0deg, transparent, transparent 39px, var(--border) 39px, var(--border) 40px),
+        repeating-linear-gradient(90deg, transparent, transparent 39px, var(--border) 39px, var(--border) 40px);
+      opacity: 0.18;
+    }
+
+    .page {
+      position: relative; z-index: 1;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    /* ── header ── */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 36px 0 48px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      display: flex; align-items: center; gap: 12px;
+    }
+
+    .logo-mark {
+      width: 36px; height: 36px;
+      background: var(--amber);
+      clip-path: polygon(0 0, 100% 0, 100% 70%, 70% 100%, 0 100%);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .logo-mark span {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 14px;
+      color: var(--bg);
+      line-height: 1;
+    }
+
+    .logo-name {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 20px;
+      letter-spacing: -0.5px;
+      color: var(--text);
+    }
+
+    .logo-name span { color: var(--amber); }
+
+    .header-tag {
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      border: 1px solid var(--border2);
+      padding: 4px 10px;
+    }
+
+    /* ── hero ── */
+    .hero {
+      padding: 64px 0 48px;
+    }
+
+    .hero-label {
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 20px;
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    .hero-label::before {
+      content: '';
+      display: inline-block;
+      width: 24px; height: 1px;
+      background: var(--amber);
+    }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(32px, 5vw, 52px);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -1px;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+
+    h1 em {
+      font-style: normal;
+      color: var(--amber);
+    }
+
+    .hero-sub {
+      font-size: 13px;
+      color: var(--text-dim);
+      line-height: 1.8;
+      max-width: 520px;
+    }
+
+    /* ── capabilities strip ── */
+    .caps {
+      display: flex;
+      gap: 0;
+      margin: 40px 0 56px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .cap {
+      flex: 1;
+      padding: 16px 20px;
+      border-right: 1px solid var(--border);
+      position: relative;
+    }
+
+    .cap:last-child { border-right: none; }
+
+    .cap-num {
+      font-size: 10px;
+      color: var(--amber-dim);
+      letter-spacing: 0.12em;
+      margin-bottom: 6px;
+    }
+
+    .cap-label {
+      font-size: 11px;
+      color: var(--text-dim);
+      line-height: 1.5;
+    }
+
+    /* ── upload card ── */
+    .upload-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      padding: 40px;
+    }
+
+    .upload-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 32px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .upload-card-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--text);
+    }
+
+    .upload-card-subtitle {
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-top: 3px;
+    }
+
+    .badge-txt {
+      font-size: 10px;
+      background: var(--amber-glow);
+      color: var(--amber);
+      border: 1px solid var(--amber-dim);
+      padding: 3px 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* drop zone */
+    .drop-zone {
+      border: 1.5px dashed var(--border2);
+      background: var(--bg3);
+      padding: 48px 32px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .drop-zone::before {
+      content: '';
+      position: absolute;
+      top: -40px; left: -40px;
+      width: 80px; height: 80px;
+      background: var(--amber);
+      opacity: 0.04;
+      transform: rotate(45deg);
+      pointer-events: none;
+    }
+
+    .drop-zone:hover,
+    .drop-zone.drag-over {
+      border-color: var(--amber-dim);
+      background: var(--bg2);
+    }
+
+    .drop-icon {
+      font-size: 32px;
+      margin-bottom: 16px;
+      display: block;
+      filter: grayscale(0.4);
+    }
+
+    .drop-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .drop-sub {
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-bottom: 24px;
+    }
+
+    #file-input { display: none; }
+
+    .btn-upload {
+      display: inline-block;
+      background: var(--amber);
+      color: var(--bg);
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 500;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      padding: 12px 28px;
+      border: none;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: opacity 0.15s, transform 0.1s;
+      text-decoration: none;
+    }
+
+    .btn-upload:hover { opacity: 0.88; transform: translateY(-1px); }
+    .btn-upload:active { transform: translateY(0); }
+
+    #file-chosen {
+      margin-top: 16px;
+      font-size: 11px;
+      color: var(--green);
+      min-height: 18px;
+    }
+
+    .submit-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 28px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .submit-note {
+      font-size: 11px;
+      color: var(--text-faint);
+      line-height: 1.6;
+    }
+
+    .btn-process {
+      background: transparent;
+      border: 1.5px solid var(--amber);
+      color: var(--amber);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 12px 32px;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      white-space: nowrap;
+    }
+
+    .btn-process:hover {
+      background: var(--amber);
+      color: var(--bg);
+    }
+
+    /* ── demo strip ── */
+    .demo-section {
+      margin-top: 48px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border);
+    }
+
+    .demo-label {
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 16px;
+    }
+
+    .demo-grid {
+      display: flex; gap: 8px; flex-wrap: wrap;
+    }
+
+    .demo-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      padding: 10px 16px;
+      text-decoration: none;
+      transition: border-color 0.15s, color 0.15s;
+    }
+
+    .demo-btn:hover {
+      border-color: var(--border2);
+      color: var(--text);
+    }
+
+    .demo-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .dot-green  { background: #22c55e; }
+    .dot-blue   { background: #60a5fa; }
+    .dot-red    { background: #ef4444; }
+    .dot-amber  { background: var(--amber); }
+
+    /* ── flash messages ── */
+    .flash-list { list-style: none; margin-bottom: 24px; }
+    .flash-list li {
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.3);
+      color: #fca5a5;
+      font-size: 12px;
+      padding: 12px 16px;
+      margin-bottom: 8px;
+    }
+
+    /* ── footer ── */
+    footer {
+      margin-top: 64px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    footer span {
+      font-size: 10px;
+      color: var(--text-faint);
+      letter-spacing: 0.08em;
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div class="logo">
+      <div class="logo-mark"><span>CS</span></div>
+      <div class="logo-name">Claim<span>Sight</span></div>
+    </div>
+    <span class="header-tag">FNOL Processing v1.0</span>
+  </header>
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul class="flash-list" style="margin-top:24px;">
+        {% for msg in messages %}<li>⚠ {{ msg }}</li>{% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+
+  <section class="hero">
+    <div class="hero-label">Autonomous Claims Triage</div>
+    <h1>First Notice of Loss<br /><em>Processed instantly.</em></h1>
+    <p class="hero-sub">
+      Upload an FNOL document and get structured field extraction,
+      missing-field detection, and intelligent claim routing — in seconds.
+    </p>
+  </section>
+
+  <div class="caps">
+    <div class="cap">
+      <div class="cap-num">01</div>
+      <div class="cap-label">Field extraction via LLM</div>
+    </div>
+    <div class="cap">
+      <div class="cap-num">02</div>
+      <div class="cap-label">Missing field detection</div>
+    </div>
+    <div class="cap">
+      <div class="cap-num">03</div>
+      <div class="cap-label">Automated routing</div>
+    </div>
+    <div class="cap">
+      <div class="cap-num">04</div>
+      <div class="cap-label">Structured JSON output</div>
+    </div>
+  </div>
+
+  <div class="upload-card">
+    <div class="upload-card-header">
+      <div>
+        <div class="upload-card-title">Upload FNOL Document</div>
+        <div class="upload-card-subtitle">Accepts .txt format · Max 2MB</div>
+      </div>
+      <span class="badge-txt">LLM Powered</span>
+    </div>
+
+    <form method="POST" action="/process" enctype="multipart/form-data" id="upload-form">
+      <div class="drop-zone" id="drop-zone">
+        <span class="drop-icon">📄</span>
+        <div class="drop-title">Drop your FNOL file here</div>
+        <div class="drop-sub">or click to browse from your computer</div>
+        <label for="file-input" class="btn-upload">Choose File</label>
+        <input type="file" id="file-input" name="fnol_file" accept=".txt" />
+        <div id="file-chosen"></div>
+      </div>
+
+      <div class="submit-row">
+        <span class="submit-note">
+          Document is processed in-memory.<br />Nothing is stored on the server.
+        </span>
+        <button type="submit" class="btn-process">▶ Run Analysis</button>
+      </div>
+    </form>
+
+    <div class="demo-section">
+      <div class="demo-label">Or try a sample document</div>
+      <div class="demo-grid">
+        <a class="demo-btn" href="/demo/1"><span class="demo-dot dot-green"></span> fnol_001 — Fast-track</a>
+        <a class="demo-btn" href="/demo/2"><span class="demo-dot dot-blue"></span> fnol_002 — Injury Claim</a>
+        <a class="demo-btn" href="/demo/3"><span class="demo-dot dot-red"></span> fnol_003 — Fraud Flag</a>
+        <a class="demo-btn" href="/demo/4"><span class="demo-dot dot-amber"></span> fnol_004 — Missing Fields</a>
+        <a class="demo-btn" href="/demo/5"><span class="demo-dot dot-amber"></span> fnol_005 — High Damage</a>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <span>CLAIMSIGHT · FNOL PROCESSING AGENT</span>
+    <span>POWERED BY GROQ + LLAMA 3.1</span>
+  </footer>
+
+</div>
+
+<script>
+  const dropZone   = document.getElementById('drop-zone');
+  const fileInput  = document.getElementById('file-input');
+  const fileChosen = document.getElementById('file-chosen');
+
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files.length) {
+      fileChosen.textContent = '✓ ' + fileInput.files[0].name;
+    }
+  });
+
+  dropZone.addEventListener('click', (e) => {
+    if (!e.target.classList.contains('btn-upload')) {
+      fileInput.click();
+    }
+  });
+
+  ['dragenter','dragover'].forEach(ev => {
+    dropZone.addEventListener(ev, e => {
+      e.preventDefault();
+      dropZone.classList.add('drag-over');
+    });
+  });
+
+  ['dragleave','drop'].forEach(ev => {
+    dropZone.addEventListener(ev, e => {
+      e.preventDefault();
+      dropZone.classList.remove('drag-over');
+    });
+  });
+
+  dropZone.addEventListener('drop', e => {
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      fileInput.files = dt.files;
+      fileChosen.textContent = '✓ ' + file.name;
+    }
+  });
+
+  // show loading state on submit
+  document.getElementById('upload-form').addEventListener('submit', function() {
+    const btn = this.querySelector('.btn-process');
+    btn.textContent = '⏳ Processing...';
+    btn.disabled = true;
+  });
+</script>
+</body>
+</html>

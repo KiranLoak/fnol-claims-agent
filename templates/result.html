@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ClaimSight — {{ result.filename }} Results</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #080a0f;
+      --bg2:        #0e1118;
+      --bg3:        #151820;
+      --border:     #1f2330;
+      --border2:    #2a2f40;
+      --amber:      #f0a500;
+      --amber-dim:  #a87200;
+      --amber-glow: rgba(240,165,0,0.12);
+      --text:       #dde3f0;
+      --text-dim:   #7a8299;
+      --text-faint: #3a3f52;
+      --green:      #22c55e;
+      --green-glow: rgba(34,197,94,0.1);
+      --blue:       #60a5fa;
+      --blue-glow:  rgba(96,165,250,0.1);
+      --red:        #ef4444;
+      --red-glow:   rgba(239,68,68,0.1);
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        repeating-linear-gradient(0deg, transparent, transparent 39px, var(--border) 39px, var(--border) 40px),
+        repeating-linear-gradient(90deg, transparent, transparent 39px, var(--border) 39px, var(--border) 40px);
+      opacity: 0.18;
+    }
+
+    .page {
+      position: relative; z-index: 1;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 36px 0 48px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .logo-mark {
+      width: 36px; height: 36px;
+      background: var(--amber);
+      clip-path: polygon(0 0, 100% 0, 100% 70%, 70% 100%, 0 100%);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .logo-mark span { font-family:'Syne',sans-serif; font-weight:800; font-size:14px; color:var(--bg); }
+    .logo-name { font-family:'Syne',sans-serif; font-weight:800; font-size:20px; color:var(--text); letter-spacing:-0.5px; }
+    .logo-name span { color:var(--amber); }
+
+    .back-btn {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 11px; color: var(--text-dim);
+      text-decoration: none; letter-spacing: 0.08em;
+      transition: color 0.15s;
+    }
+    .back-btn:hover { color: var(--text); }
+
+    /* ── route banner ── */
+    .route-banner {
+      margin-top: 40px;
+      padding: 28px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      border-left: 3px solid var(--route-color);
+      background: var(--route-bg);
+      border-right: 1px solid var(--border);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .route-banner.green  { --route-color: var(--green);  --route-bg: var(--green-glow); }
+    .route-banner.blue   { --route-color: var(--blue);   --route-bg: var(--blue-glow);  }
+    .route-banner.red    { --route-color: var(--red);    --route-bg: var(--red-glow);   }
+    .route-banner.amber  { --route-color: var(--amber);  --route-bg: var(--amber-glow); }
+
+    .route-left { display: flex; flex-direction: column; gap: 6px; }
+
+    .route-eyebrow {
+      font-size: 10px; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--text-dim);
+    }
+
+    .route-name {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800; font-size: 26px;
+      color: var(--route-color);
+      letter-spacing: -0.5px;
+    }
+
+    .route-desc { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+
+    .route-icon { font-size: 40px; }
+
+    /* ── reasoning block ── */
+    .reasoning-block {
+      margin-top: 16px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      padding: 20px 24px;
+      font-size: 12px;
+      color: var(--text-dim);
+      line-height: 1.8;
+    }
+
+    .reasoning-block strong {
+      color: var(--text-dim);
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 10px;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    /* ── missing fields alert ── */
+    .missing-alert {
+      margin-top: 16px;
+      background: rgba(239,68,68,0.06);
+      border: 1px solid rgba(239,68,68,0.25);
+      padding: 16px 24px;
+    }
+
+    .missing-alert-title {
+      font-size: 10px; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--red);
+      margin-bottom: 10px;
+    }
+
+    .missing-tags {
+      display: flex; flex-wrap: wrap; gap: 6px;
+    }
+
+    .missing-tag {
+      font-size: 11px;
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.2);
+      color: #fca5a5;
+      padding: 3px 10px;
+    }
+
+    /* ── section layout ── */
+    .sections-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 32px;
+    }
+
+    @media(max-width: 640px) {
+      .sections-grid { grid-template-columns: 1fr; }
+    }
+
+    .section-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .section-card.full { grid-column: 1 / -1; }
+
+    .section-header {
+      display: flex; align-items: center; gap: 10px;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg3);
+    }
+
+    .section-num {
+      font-size: 9px;
+      color: var(--amber-dim);
+      letter-spacing: 0.1em;
+    }
+
+    .section-title {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      font-weight: 500;
+    }
+
+    .section-body { padding: 18px 20px; }
+
+    .field-row {
+      display: flex;
+      gap: 12px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      align-items: flex-start;
+    }
+
+    .field-row:last-child { border-bottom: none; }
+
+    .field-key {
+      font-size: 10px;
+      color: var(--text-faint);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      flex: 0 0 140px;
+      padding-top: 1px;
+    }
+
+    .field-val {
+      font-size: 12px;
+      color: var(--text);
+      line-height: 1.6;
+      flex: 1;
+      word-break: break-word;
+    }
+
+    .field-val.null {
+      color: var(--text-faint);
+      font-style: italic;
+    }
+
+    .field-val.highlight { color: var(--amber); }
+
+    /* ── json output ── */
+    .json-section {
+      margin-top: 12px;
+    }
+
+    .json-header {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-bottom: none;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .json-header-left {
+      display: flex; align-items: center; gap: 10px;
+    }
+
+    .json-toggle-label {
+      font-size: 11px; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--text-dim);
+    }
+
+    .json-copy-btn {
+      font-size: 10px; letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: transparent;
+      border: 1px solid var(--border2);
+      color: var(--text-dim);
+      padding: 4px 12px;
+      cursor: pointer;
+      font-family: 'JetBrains Mono', monospace;
+      transition: border-color 0.15s, color 0.15s;
+    }
+
+    .json-copy-btn:hover { border-color: var(--amber-dim); color: var(--amber); }
+
+    .json-body {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      padding: 24px;
+      overflow-x: auto;
+      display: none;
+    }
+
+    .json-body.open { display: block; }
+
+    pre {
+      font-size: 11px;
+      line-height: 1.8;
+      color: var(--text-dim);
+      white-space: pre;
+    }
+
+    .j-key   { color: #7dd3fc; }
+    .j-str   { color: #86efac; }
+    .j-num   { color: var(--amber); }
+    .j-null  { color: var(--text-faint); }
+    .j-bool  { color: #f472b6; }
+
+    /* ── actions ── */
+    .actions {
+      margin-top: 32px;
+      display: flex; gap: 12px; flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: var(--amber);
+      color: var(--bg);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px; font-weight: 500;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 12px 28px; border: none; cursor: pointer;
+      text-decoration: none; display: inline-block;
+      transition: opacity 0.15s;
+    }
+
+    .btn-primary:hover { opacity: 0.88; }
+
+    .btn-outline {
+      background: transparent;
+      border: 1.5px solid var(--border2);
+      color: var(--text-dim);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px; letter-spacing: 0.08em;
+      text-transform: uppercase; padding: 12px 28px;
+      cursor: pointer; text-decoration: none;
+      display: inline-block; transition: border-color 0.15s, color 0.15s;
+    }
+
+    .btn-outline:hover { border-color: var(--border); color: var(--text); }
+
+    footer {
+      margin-top: 64px; padding-top: 24px;
+      border-top: 1px solid var(--border);
+      display: flex; justify-content: space-between;
+      align-items: center; flex-wrap: wrap; gap: 12px;
+    }
+
+    footer span { font-size: 10px; color: var(--text-faint); letter-spacing: 0.08em; }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <a class="logo" href="/">
+      <div class="logo-mark"><span>CS</span></div>
+      <div class="logo-name">Claim<span>Sight</span></div>
+    </a>
+    <a class="back-btn" href="/">← New Analysis</a>
+  </header>
+
+  {% set color = result.routeMeta.color %}
+
+  <div class="route-banner {{ color }}">
+    <div class="route-left">
+      <span class="route-eyebrow">Recommended Route · {{ result.filename }}</span>
+      <div class="route-name">{{ result.routeMeta.icon }} {{ result.recommendedRoute }}</div>
+      <div class="route-desc">{{ result.routeMeta.description }}</div>
+    </div>
+    <div class="route-icon" aria-hidden="true">{{ result.routeMeta.icon }}</div>
+  </div>
+
+  <div class="reasoning-block">
+    <strong>Routing Rationale</strong>
+    {{ result.reasoning }}
+  </div>
+
+  {% if result.missingFields %}
+  <div class="missing-alert">
+    <div class="missing-alert-title">⚠ Missing / Incomplete Fields ({{ result.missingFields | length }})</div>
+    <div class="missing-tags">
+      {% for f in result.missingFields %}
+        <span class="missing-tag">{{ f }}</span>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  {# ── Extracted Fields ── #}
+  {% set ef = result.extractedFields %}
+
+  <div class="sections-grid">
+
+    {# Policy Information #}
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-num">01</span>
+        <span class="section-title">Policy Information</span>
+      </div>
+      <div class="section-body">
+        {% set pi = ef.policy_information %}
+        {% for key, label in [
+          ('policy_number',       'Policy No.'),
+          ('policyholder_name',   'Policyholder'),
+          ('policy_effective_date','Effective'),
+          ('policy_expiry_date',  'Expiry')
+        ] %}
+        <div class="field-row">
+          <span class="field-key">{{ label }}</span>
+          <span class="field-val {% if pi[key] is none or pi[key] == '' %}null{% endif %}">
+            {{ pi[key] if pi[key] else '— not provided' }}
+          </span>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    {# Claim Details #}
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-num">02</span>
+        <span class="section-title">Claim Details</span>
+      </div>
+      <div class="section-body">
+        {% set cd = ef.claim_details %}
+        <div class="field-row">
+          <span class="field-key">Type</span>
+          <span class="field-val highlight">{{ cd.claim_type if cd.claim_type else '— not provided' }}</span>
+        </div>
+        <div class="field-row">
+          <span class="field-key">Initial Est.</span>
+          <span class="field-val {% if cd.initial_estimate is none %}null{% endif %}">
+            {% if cd.initial_estimate %}${{ "{:,.0f}".format(cd.initial_estimate | float) }}{% else %}— not provided{% endif %}
+          </span>
+        </div>
+        <div class="field-row">
+          <span class="field-key">Attachments</span>
+          <span class="field-val {% if cd.attachments is none %}null{% endif %}">
+            {{ cd.attachments if cd.attachments else '— none' }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    {# Incident Information #}
+    <div class="section-card full">
+      <div class="section-header">
+        <span class="section-num">03</span>
+        <span class="section-title">Incident Information</span>
+      </div>
+      <div class="section-body">
+        {% set ii = ef.incident_information %}
+        <div class="field-row">
+          <span class="field-key">Date</span>
+          <span class="field-val">{{ ii.date_of_incident if ii.date_of_incident else '— not provided' }}</span>
+        </div>
+        <div class="field-row">
+          <span class="field-key">Time</span>
+          <span class="field-val {% if ii.time_of_incident is none %}null{% endif %}">
+            {{ ii.time_of_incident if ii.time_of_incident else '— not provided' }}
+          </span>
+        </div>
+        <div class="field-row">
+          <span class="field-key">Location</span>
+          <span class="field-val">{{ ii.location if ii.location else '— not provided' }}</span>
+        </div>
+        <div class="field-row">
+          <span class="field-key">Description</span>
+          <span class="field-val">{{ ii.description if ii.description else '— not provided' }}</span>
+        </div>
+      </div>
+    </div>
+
+    {# Involved Parties #}
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-num">04</span>
+        <span class="section-title">Involved Parties</span>
+      </div>
+      <div class="section-body">
+        {% set ip = ef.involved_parties %}
+        <div class="field-row">
+          <span class="field-key">Claimant</span>
+          <span class="field-val">{{ ip.claimant if ip.claimant else '— not provided' }}</span>
+        </div>
+        <div class="field-row">
+          <span class="field-key">Third Parties</span>
+          <span class="field-val {% if ip.third_parties is none %}null{% endif %}">
+            {{ ip.third_parties if ip.third_parties else '— none' }}
+          </span>
+        </div>
+        <div class="field-row">
+          <span class="field-key">Contact</span>
+          <span class="field-val {% if ip.contact_details is none %}null{% endif %}">
+            {{ ip.contact_details if ip.contact_details else '— not provided' }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    {# Asset Details #}
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-num">05</span>
+        <span class="section-title">Asset Details</span>
+      </div>
+      <div class="section-body">
+        {% set ad = ef.asset_details %}
+        <div class="field-row">
+          <span class="field-key">Asset Type</span>
+          <span class="field-val">{{ ad.asset_type if ad.asset_type else '— not provided' }}</span>
+        </div>
+        <div class="field-row">
+          <span class="field-key">Asset ID</span>
+          <span class="field-val">{{ ad.asset_id if ad.asset_id else '— not provided' }}</span>
+        </div>
+        <div class="field-row">
+          <span class="field-key">Est. Damage</span>
+          <span class="field-val highlight">
+            {% if ad.estimated_damage %}${{ "{:,.0f}".format(ad.estimated_damage | float) }}{% else %}— not provided{% endif %}
+          </span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /sections-grid -->
+
+  {# ── JSON Output ── #}
+  <div class="json-section">
+    <div class="json-header" id="json-toggle">
+      <div class="json-header-left">
+        <span class="section-num">{ }</span>
+        <span class="json-toggle-label">Raw JSON Output</span>
+      </div>
+      <button class="json-copy-btn" id="copy-btn" onclick="copyJson(event)">Copy JSON</button>
+    </div>
+    <div class="json-body" id="json-body">
+      <pre id="json-pre">{{ result | tojson(indent=2) | highlight_json }}</pre>
+    </div>
+  </div>
+
+  <div class="actions">
+    <a href="/" class="btn-primary">← Process Another</a>
+    <button class="btn-outline" onclick="downloadJson()">⬇ Download JSON</button>
+  </div>
+
+  <footer>
+    <span>CLAIMSIGHT · FNOL PROCESSING AGENT</span>
+    <span>POWERED BY GROQ + LLAMA 3.1</span>
+  </footer>
+
+</div>
+
+<script>
+  // toggle JSON panel
+  document.getElementById('json-toggle').addEventListener('click', function(e) {
+    if (e.target.id === 'copy-btn') return;
+    document.getElementById('json-body').classList.toggle('open');
+  });
+
+  const rawJson = {{ result | tojson }};
+
+  function copyJson(e) {
+    e.stopPropagation();
+    navigator.clipboard.writeText(JSON.stringify(rawJson, null, 2)).then(() => {
+      const btn = document.getElementById('copy-btn');
+      btn.textContent = '✓ Copied';
+      setTimeout(() => btn.textContent = 'Copy JSON', 1800);
+    });
+  }
+
+  function downloadJson() {
+    const blob = new Blob([JSON.stringify(rawJson, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = '{{ result.filename }}'.replace('.txt', '_result.json');
+    a.click();
+  }
+</script>
+</body>
+</html>

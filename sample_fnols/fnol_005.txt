@@ -1,0 +1,45 @@
+FIRST NOTICE OF LOSS - FNOL DOCUMENT
+=====================================
+
+POLICY INFORMATION
+------------------
+Policy Number     : POL-2023-11047
+Policyholder Name : Linda Cartwright
+Policy Effective  : 01-Oct-2023
+Policy Expiry     : 30-Sep-2024
+
+INCIDENT INFORMATION
+---------------------
+Date of Incident  : 05-Apr-2024
+Time of Incident  : 02:20 PM
+Location          : Route 66, Albuquerque, NM
+Description       : Multi-vehicle pileup on the highway during a sandstorm.
+                    Three vehicles were involved. The insured vehicle was
+                    hit from both sides. Significant structural damage to
+                    all sides of the vehicle. No fatalities, minor injuries
+                    treated on-site and released.
+
+INVOLVED PARTIES
+----------------
+Claimant          : Linda Cartwright
+Third Party 1     : Marcus Trevino  | mtrevino@email.com | +1-505-555-0133
+Third Party 2     : Angela Forbes   | aforbes@email.com  | +1-505-555-0267
+Contact Details   : linda.c@hotmail.com | +1-505-555-0391
+
+ASSET DETAILS
+-------------
+Asset Type        : Motor Vehicle
+Asset ID / Plate  : NM-VEH-8801
+Make & Model      : Ford F-150 2021
+Estimated Damage  : $27,500
+
+CLAIM DETAILS
+-------------
+Claim Type        : Property Damage
+Attachments       : Photos_Scene_001.jpg, Photos_Scene_002.jpg, Photos_Scene_003.jpg, PoliceReport_ABQ_05Apr.pdf
+Initial Estimate  : $27,500
+
+=====================================
+Submitted by: Linda Cartwright
+Submission Date : 06-Apr-2024
+=====================================

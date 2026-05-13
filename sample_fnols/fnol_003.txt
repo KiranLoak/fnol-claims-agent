@@ -1,0 +1,45 @@
+FIRST NOTICE OF LOSS - FNOL DOCUMENT
+=====================================
+
+POLICY INFORMATION
+------------------
+Policy Number     : POL-2024-01193
+Policyholder Name : Robert Vance
+Policy Effective  : 01-Feb-2024
+Policy Expiry     : 31-Jan-2025
+
+INCIDENT INFORMATION
+---------------------
+Date of Incident  : 10-Apr-2024
+Time of Incident  : 11:30 PM
+Location          : Warehouse District, Chicago, IL
+Description       : Vehicle was reportedly stolen from a parking lot late at
+                    night. Claimant states he parked his vehicle around 9PM and
+                    returned at midnight to find it gone. Witnesses are inconsistent
+                    about the exact timeline. Some details provided by the claimant
+                    appear staged based on the inconsistency between witness
+                    accounts and CCTV timestamps.
+
+INVOLVED PARTIES
+----------------
+Claimant          : Robert Vance
+Third Party       : N/A
+Contact Details   : r.vance@outlook.com | +1-312-555-0247
+
+ASSET DETAILS
+-------------
+Asset Type        : Motor Vehicle
+Asset ID / Plate  : IL-VEH-3309
+Make & Model      : BMW X5 2023
+Estimated Damage  : $55,000 (Total Loss - Theft)
+
+CLAIM DETAILS
+-------------
+Claim Type        : Theft
+Attachments       : PoliceReport_Chicago_10Apr.pdf
+Initial Estimate  : $55,000
+
+=====================================
+Submitted by: Robert Vance
+Submission Date : 11-Apr-2024
+=====================================

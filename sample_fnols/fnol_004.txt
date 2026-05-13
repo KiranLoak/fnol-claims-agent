@@ -1,0 +1,42 @@
+FIRST NOTICE OF LOSS - FNOL DOCUMENT
+=====================================
+
+POLICY INFORMATION
+------------------
+Policy Number     : POL-2024-05522
+Policyholder Name : Priya Nair
+Policy Effective  : [NOT PROVIDED]
+Policy Expiry     : [NOT PROVIDED]
+
+INCIDENT INFORMATION
+---------------------
+Date of Incident  : 21-Apr-2024
+Time of Incident  : [NOT PROVIDED]
+Location          : Downtown Austin, TX
+Description       : Water damage to property caused by a burst pipe in the
+                    kitchen. Flooding affected the kitchen floor, cabinets,
+                    and part of the living room. Repair work is needed urgently.
+
+INVOLVED PARTIES
+----------------
+Claimant          : Priya Nair
+Third Party       : N/A
+Contact Details   : [NOT PROVIDED]
+
+ASSET DETAILS
+-------------
+Asset Type        : Residential Property
+Asset ID          : 45 Maple Drive, Austin TX 78701
+Make & Model      : N/A
+Estimated Damage  : $18,000
+
+CLAIM DETAILS
+-------------
+Claim Type        : Property Damage
+Attachments       : [NONE]
+Initial Estimate  : [NOT PROVIDED]
+
+=====================================
+Submitted by: Priya Nair
+Submission Date : 22-Apr-2024
+=====================================
